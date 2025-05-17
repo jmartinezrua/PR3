@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Debug UOC20242 (WSL)",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/build/UOC20242/UOC20242",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/build/UOC20242",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "miDebuggerPath": "/usr/bin/gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ],
+        "preLaunchTask": "Build UOC20242"
+      }
+    ]
+  }
+  

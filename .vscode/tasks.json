@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Build UOCPlay",
+        "type": "shell",
+        "command": "cmake -S UOCPlay -B build/UOCPlay && cmake --build build/UOCPlay",
+        "options": {
+          "cwd": "${workspaceFolder}"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Build UOC20242",
+        "type": "shell",
+        "command": "cmake -S . -B build/UOC20242 && cmake --build build/UOC20242",
+        "options": {
+          "cwd": "${workspaceFolder}"
+        },
+        "problemMatcher": [],
+        "dependsOn": ["Build UOCPlay"],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      }
+    ]
+  }
+  

@@ -1,0 +1,6 @@
+/home/user/PR3/UOC20242_PR3_code/UOC20242/build/UOC20242/CMakeFiles/UOC20242.dir
+/home/user/PR3/UOC20242_PR3_code/UOC20242/build/UOC20242/CMakeFiles/edit_cache.dir
+/home/user/PR3/UOC20242_PR3_code/UOC20242/build/UOC20242/CMakeFiles/rebuild_cache.dir
+/home/user/PR3/UOC20242_PR3_code/UOC20242/build/UOC20242/build/UOCPlay/CMakeFiles/UOCPlay.dir
+/home/user/PR3/UOC20242_PR3_code/UOC20242/build/UOC20242/build/UOCPlay/CMakeFiles/edit_cache.dir
+/home/user/PR3/UOC20242_PR3_code/UOC20242/build/UOC20242/build/UOCPlay/CMakeFiles/rebuild_cache.dir
