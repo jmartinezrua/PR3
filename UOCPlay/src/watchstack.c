@@ -30,11 +30,8 @@ bool filmstack_isEmpty(tFilmstack stack) {
 
 // Adds a new film to the stack, unless it already exists
 tApiError filmstack_push(tFilmstack* stack, tFilm film) {
-    /////////////////////////////////
-    // PR2_2e
-    /////////////////////////////////
     assert(stack != NULL);
-
+    
     // Check if the film already exists in the stack (by title)
     tFilmstackNode* current = stack->top;
     while (current != NULL) {
@@ -44,20 +41,21 @@ tApiError filmstack_push(tFilmstack* stack, tFilm film) {
         }
         current = current->next;
     }
-
+    
     // Allocate memory for the new node
     tFilmstackNode* node = (tFilmstackNode*) malloc(sizeof(tFilmstackNode));
-    if (node == NULL)
+    if (node == NULL) {
         return E_MEMORY_ERROR;
-
+    }
+    
     // Copy the film to the new node
     film_cpy(&node->elem, film);
-
+    
     // Insert the node at the top of the stack
     node->next = stack->top;
     stack->top = node;
     stack->count++;
-
+    
     return E_SUCCESS;
 }
 
