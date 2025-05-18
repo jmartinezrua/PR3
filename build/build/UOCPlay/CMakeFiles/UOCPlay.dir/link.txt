@@ -1,0 +1,2 @@
+/usr/bin/ar qc libUOCPlay.a CMakeFiles/UOCPlay.dir/src/api.c.o CMakeFiles/UOCPlay.dir/src/csv.c.o CMakeFiles/UOCPlay.dir/src/date.c.o CMakeFiles/UOCPlay.dir/src/film.c.o CMakeFiles/UOCPlay.dir/src/person.c.o CMakeFiles/UOCPlay.dir/src/show.c.o CMakeFiles/UOCPlay.dir/src/subscription.c.o CMakeFiles/UOCPlay.dir/src/watchstack.c.o
+/usr/bin/ranlib libUOCPlay.a

@@ -24,7 +24,7 @@ typedef enum {
 
 typedef struct _tFilm {
 	char* name;
-	tTime duration;
+	tTime duration;  // This is a struct, not an integer
 	tFilmGenre genre;
 	tDate release;
 	float rating;
@@ -93,7 +93,7 @@ tApiError filmList_del(tFilmList* list, const char* name);
 // Return a pointer to the film
 tFilm* filmList_find(tFilmList list, const char* name);
 
-// Return a pointer to the longest film of the list
+// Find the longest film in the list
 tFilm* filmList_longestFind(tFilmList list);
 
 // Return a pointer to the longest free film of the list

@@ -6,5 +6,5 @@ C_DEFINES =
 
 C_INCLUDES = -I/home/user/PR3/UOC20242_PR3_code/UOC20242/include -I/home/user/PR3/UOC20242_PR3_code/UOC20242/test/include -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include
 
-C_FLAGS = -std=gnu11
+C_FLAGS = -g -std=gnu11
 

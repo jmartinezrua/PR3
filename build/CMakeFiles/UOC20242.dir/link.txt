@@ -1,0 +1,1 @@
+/usr/bin/gcc -g CMakeFiles/UOC20242.dir/src/main.c.o CMakeFiles/UOC20242.dir/test/src/test.c.o CMakeFiles/UOC20242.dir/test/src/test_pr1.c.o CMakeFiles/UOC20242.dir/test/src/test_pr2.c.o CMakeFiles/UOC20242.dir/test/src/test_pr3.c.o CMakeFiles/UOC20242.dir/test/src/test_suite.c.o -o UOC20242  build/UOCPlay/libUOCPlay.a 

@@ -1,0 +1,72 @@
+[
+{
+  "directory": "/home/user/PR3/UOC20242_PR3_code/UOC20242/build",
+  "command": "/usr/bin/gcc  -I/home/user/PR3/UOC20242_PR3_code/UOC20242/include -I/home/user/PR3/UOC20242_PR3_code/UOC20242/test/include -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include -g -std=gnu11 -o CMakeFiles/UOC20242.dir/src/main.c.o -c /home/user/PR3/UOC20242_PR3_code/UOC20242/src/main.c",
+  "file": "/home/user/PR3/UOC20242_PR3_code/UOC20242/src/main.c"
+},
+{
+  "directory": "/home/user/PR3/UOC20242_PR3_code/UOC20242/build",
+  "command": "/usr/bin/gcc  -I/home/user/PR3/UOC20242_PR3_code/UOC20242/include -I/home/user/PR3/UOC20242_PR3_code/UOC20242/test/include -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include -g -std=gnu11 -o CMakeFiles/UOC20242.dir/test/src/test.c.o -c /home/user/PR3/UOC20242_PR3_code/UOC20242/test/src/test.c",
+  "file": "/home/user/PR3/UOC20242_PR3_code/UOC20242/test/src/test.c"
+},
+{
+  "directory": "/home/user/PR3/UOC20242_PR3_code/UOC20242/build",
+  "command": "/usr/bin/gcc  -I/home/user/PR3/UOC20242_PR3_code/UOC20242/include -I/home/user/PR3/UOC20242_PR3_code/UOC20242/test/include -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include -g -std=gnu11 -o CMakeFiles/UOC20242.dir/test/src/test_pr1.c.o -c /home/user/PR3/UOC20242_PR3_code/UOC20242/test/src/test_pr1.c",
+  "file": "/home/user/PR3/UOC20242_PR3_code/UOC20242/test/src/test_pr1.c"
+},
+{
+  "directory": "/home/user/PR3/UOC20242_PR3_code/UOC20242/build",
+  "command": "/usr/bin/gcc  -I/home/user/PR3/UOC20242_PR3_code/UOC20242/include -I/home/user/PR3/UOC20242_PR3_code/UOC20242/test/include -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include -g -std=gnu11 -o CMakeFiles/UOC20242.dir/test/src/test_pr2.c.o -c /home/user/PR3/UOC20242_PR3_code/UOC20242/test/src/test_pr2.c",
+  "file": "/home/user/PR3/UOC20242_PR3_code/UOC20242/test/src/test_pr2.c"
+},
+{
+  "directory": "/home/user/PR3/UOC20242_PR3_code/UOC20242/build",
+  "command": "/usr/bin/gcc  -I/home/user/PR3/UOC20242_PR3_code/UOC20242/include -I/home/user/PR3/UOC20242_PR3_code/UOC20242/test/include -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include -g -std=gnu11 -o CMakeFiles/UOC20242.dir/test/src/test_pr3.c.o -c /home/user/PR3/UOC20242_PR3_code/UOC20242/test/src/test_pr3.c",
+  "file": "/home/user/PR3/UOC20242_PR3_code/UOC20242/test/src/test_pr3.c"
+},
+{
+  "directory": "/home/user/PR3/UOC20242_PR3_code/UOC20242/build",
+  "command": "/usr/bin/gcc  -I/home/user/PR3/UOC20242_PR3_code/UOC20242/include -I/home/user/PR3/UOC20242_PR3_code/UOC20242/test/include -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include -g -std=gnu11 -o CMakeFiles/UOC20242.dir/test/src/test_suite.c.o -c /home/user/PR3/UOC20242_PR3_code/UOC20242/test/src/test_suite.c",
+  "file": "/home/user/PR3/UOC20242_PR3_code/UOC20242/test/src/test_suite.c"
+},
+{
+  "directory": "/home/user/PR3/UOC20242_PR3_code/UOC20242/build/build/UOCPlay",
+  "command": "/usr/bin/gcc  -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include -g -std=gnu11 -o CMakeFiles/UOCPlay.dir/src/api.c.o -c /home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/api.c",
+  "file": "/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/api.c"
+},
+{
+  "directory": "/home/user/PR3/UOC20242_PR3_code/UOC20242/build/build/UOCPlay",
+  "command": "/usr/bin/gcc  -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include -g -std=gnu11 -o CMakeFiles/UOCPlay.dir/src/csv.c.o -c /home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/csv.c",
+  "file": "/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/csv.c"
+},
+{
+  "directory": "/home/user/PR3/UOC20242_PR3_code/UOC20242/build/build/UOCPlay",
+  "command": "/usr/bin/gcc  -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include -g -std=gnu11 -o CMakeFiles/UOCPlay.dir/src/date.c.o -c /home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/date.c",
+  "file": "/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/date.c"
+},
+{
+  "directory": "/home/user/PR3/UOC20242_PR3_code/UOC20242/build/build/UOCPlay",
+  "command": "/usr/bin/gcc  -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include -g -std=gnu11 -o CMakeFiles/UOCPlay.dir/src/film.c.o -c /home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/film.c",
+  "file": "/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/film.c"
+},
+{
+  "directory": "/home/user/PR3/UOC20242_PR3_code/UOC20242/build/build/UOCPlay",
+  "command": "/usr/bin/gcc  -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include -g -std=gnu11 -o CMakeFiles/UOCPlay.dir/src/person.c.o -c /home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/person.c",
+  "file": "/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/person.c"
+},
+{
+  "directory": "/home/user/PR3/UOC20242_PR3_code/UOC20242/build/build/UOCPlay",
+  "command": "/usr/bin/gcc  -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include -g -std=gnu11 -o CMakeFiles/UOCPlay.dir/src/show.c.o -c /home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/show.c",
+  "file": "/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/show.c"
+},
+{
+  "directory": "/home/user/PR3/UOC20242_PR3_code/UOC20242/build/build/UOCPlay",
+  "command": "/usr/bin/gcc  -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include -g -std=gnu11 -o CMakeFiles/UOCPlay.dir/src/subscription.c.o -c /home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/subscription.c",
+  "file": "/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/subscription.c"
+},
+{
+  "directory": "/home/user/PR3/UOC20242_PR3_code/UOC20242/build/build/UOCPlay",
+  "command": "/usr/bin/gcc  -I/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/include -g -std=gnu11 -o CMakeFiles/UOCPlay.dir/src/watchstack.c.o -c /home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/watchstack.c",
+  "file": "/home/user/PR3/UOC20242_PR3_code/UOC20242/UOCPlay/src/watchstack.c"
+}
+]

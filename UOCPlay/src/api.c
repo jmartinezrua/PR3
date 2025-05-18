@@ -492,11 +492,28 @@ tApiError api_getFilmsByGenre(tApiData data, tCSVData *films, int genre) {
 
 // Get longest film
 tApiError api_getLongestFilm(tApiData data, tCSVEntry *entry) {
-    /////////////////////////////////
-    // PR3_4b
-    /////////////////////////////////
+    char buffer[FILE_READ_BUFFER_SIZE];
+    tFilm *longestFilm = NULL;
     
-    return E_NOT_IMPLEMENTED;
+    // Check preconditions
+    assert(entry != NULL);
+    
+    // Find the longest film
+    longestFilm = filmList_longestFind(data.films.filmList);
+    
+    // If no film was found
+    if (longestFilm == NULL) {
+        return E_FILM_NOT_FOUND;
+    }
+    
+    // Convert the film to a CSV entry
+    film_get(*longestFilm, buffer);
+    
+    // Initialize the output structure
+    csv_initEntry(entry);
+    csv_parseEntry(entry, buffer, "FILM");
+    
+    return E_SUCCESS;
 }
 
 // Get longest free film
