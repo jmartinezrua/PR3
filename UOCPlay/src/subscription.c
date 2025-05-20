@@ -443,24 +443,125 @@ char* popularFilm_find(tSubscriptions data) {
 }
 
 // Return a pointer to the subscriptions of the client with the specified document
+/**
+ * @brief Finds all subscriptions associated with a specific document
+ * 
+ * This function creates a new tSubscriptions structure containing all
+ * subscriptions associated with the given document.
+ * 
+ * @param data The original subscriptions structure
+ * @param document The document to search for
+ * @return A new tSubscriptions structure
+ */
 tSubscriptions* subscriptions_findByDocument(tSubscriptions data, char* document) {
-    /////////////////////////////////
-    // PR3_3b
-    /////////////////////////////////
+    printf("[TRACE-EX3_8] Starting subscriptions_findByDocument for document: %s\n", document);
+    printf("[TRACE-EX3_8] Original structure has %d subscriptions\n", data.count);
     
-    /////////////////////////////////
-    // PR3_3d
-    /////////////////////////////////
+    // Crear un tSubscriptions nuevo vacío
+    tSubscriptions* result = (tSubscriptions*)malloc(sizeof(tSubscriptions));
+    if (result == NULL) {
+        printf("[TRACE-EX3_8] Failed to allocate memory for result\n");
+        return NULL;
+    }
     
-    return NULL;
+    // Inicializar la estructura
+    result->count = 0;
+    result->elems = NULL;
     
+    printf("[TRACE-EX3_8] Created empty result structure\n");
+    
+    // Recorrer todas las suscripciones originales y añadir las del documento buscado
+    for (int i = 0; i < data.count; i++) {
+        printf("[TRACE-EX3_8] Checking subscription %d with document '%s'\n", 
+               data.elems[i].id, data.elems[i].document);
+        
+        if (strcmp(data.elems[i].document, document) == 0) {
+            printf("[TRACE-EX3_8] Found matching subscription with ID %d\n", data.elems[i].id);
+            
+            // Incrementar el contador y redimensionar el array
+            result->count++;
+            result->elems = (tSubscription*)realloc(result->elems, 
+                                                   result->count * sizeof(tSubscription));
+            
+            if (result->elems == NULL) {
+                printf("[TRACE-EX3_8] Failed to reallocate memory for result->elems\n");
+                free(result);
+                return NULL;
+            }
+            
+            // Copiar la suscripción básica
+            tSubscription* newSub = &result->elems[result->count - 1];
+            *newSub = data.elems[i];
+            
+            // Asignar un nuevo ID secuencial
+            newSub->id = result->count;
+            
+            // Inicializar la watchlist como vacía
+            filmstack_init(&newSub->watchlist);
+            
+            // Copiar la watchlist si existe
+            if (data.elems[i].watchlist.count > 0 && data.elems[i].watchlist.top != NULL) {
+                // Primero, recolectar todas las películas en un array temporal
+                tFilm* films = (tFilm*)malloc(data.elems[i].watchlist.count * sizeof(tFilm));
+                if (films == NULL) {
+                    printf("[TRACE-EX3_8] Failed to allocate memory for temporary films array\n");
+                    free(result->elems);
+                    free(result);
+                    return NULL;
+                }
+                
+                // Recorrer la pila original y guardar las películas en el array
+                tFilmstackNode* currentNode = data.elems[i].watchlist.top;
+                int filmCount = 0;
+                while (currentNode != NULL) {
+                    films[filmCount++] = currentNode->elem;
+                    currentNode = currentNode->next;
+                }
+                
+                // Ahora, añadir las películas a la nueva pila en orden inverso
+                // para mantener el mismo orden que en la pila original
+                for (int j = filmCount - 1; j >= 0; j--) {
+                    filmstack_push(&newSub->watchlist, films[j]);
+                }
+                
+                // Liberar el array temporal
+                free(films);
+            }
+            
+            printf("[TRACE-EX3_8] Added subscription to result, new ID: %d, watchlist size: %d\n", 
+                   newSub->id, newSub->watchlist.count);
+        }
+    }
+    
+    printf("[TRACE-EX3_8] Finished. Result structure has %d subscriptions\n", result->count);
+    
+    return result;
 }
 
 // return a pointer to the subscription with the specified id
+/**
+ * @brief Finds a subscription by its ID
+ * 
+ * This function searches for a subscription with the given ID in the
+ * subscriptions structure and returns a pointer to it if found.
+ * 
+ * @param data The subscriptions structure to search in
+ * @param id The ID to search for
+ * @return A pointer to the subscription if found, NULL otherwise
+ */
 tSubscription* subscriptions_findHash(tSubscriptions data, int id) {
-    /////////////////////////////////
-    // PR3_3c
-    /////////////////////////////////
+    if (data.count == 0 || data.elems == NULL) {
+        return NULL;
+    }
+    
+    // Search for the subscription with the given ID
+    for (int i = 0; i < data.count; i++) {
+        if (data.elems[i].id == id) {
+            return &data.elems[i];
+        }
+    }
+    
+    // If not found, return NULL
     return NULL;
 }
 
