@@ -102,8 +102,9 @@ void subscription_get(tSubscription data, char* buffer) {
         data.numDevices);
 }
 
+// Initialize subscriptions data
 tApiError subscriptions_init(tSubscriptions* data) {
-     // Check input data
+    // Check input data
     assert(data != NULL);
     data->elems = NULL;
     data->count = 0; 
@@ -118,74 +119,52 @@ int subscriptions_len(tSubscriptions data) {
 
 // Add a new subscription
 tApiError subscriptions_add(tSubscriptions* data, tPeople people, tSubscription subscription) {
-
-    // Check input data
     assert(data != NULL);
-
-    // If subscription already exists, return an error
-    for (int i=0; i< data->count; i++) {
+    for (int i = 0; i < data->count; i++) {
         if (subscription_equal(data->elems[i], subscription))
             return E_SUBSCRIPTION_DUPLICATED;
     }
-
-    // If the person does not exist, return an error
     if (people_find(people, subscription.document) < 0)
         return E_PERSON_NOT_FOUND;
 
-    // Copy the data to the new position
-    if (data->elems == NULL) {
-        data->elems = (tSubscription*) malloc(sizeof(tSubscription));
-    } else {
-        data->elems = (tSubscription*) realloc(data->elems, (data->count + 1) * sizeof(tSubscription));
-    }
-    assert(data->elems != NULL);
-    subscription_cpy(&(data->elems[data->count]), subscription);
+    tSubscription *tmp;
+    if (data->elems == NULL)
+        tmp = malloc(sizeof(tSubscription));
+    else
+        tmp = realloc(data->elems, (data->count + 1) * sizeof(tSubscription));
+    assert(tmp != NULL);
+    data->elems = tmp;
 
-    /////////////////////////////////
-    // Increase the number of elements
+    subscription_cpy(&data->elems[data->count], subscription);
+    data->elems[data->count].id = data->count + 1;
     data->count++;
-    
-    /////////////////////////////////
-    // PR3_3f
-    /////////////////////////////////
-    
+
     return E_SUCCESS;
 }
 
 // Remove a subscription
 tApiError subscriptions_del(tSubscriptions* data, int id) {
-    int idx;
-    int i;
-    
-    // Check if an entry with this data already exists
-    idx = subscriptions_find(*data, id);
-    
-    // If the subscription does not exist, return an error
+    assert(data != NULL);
+    int idx = subscriptions_find(*data, id);
     if (idx < 0)
         return E_SUBSCRIPTION_NOT_FOUND;
-    
-    // Shift elements to remove selected
-    for(i = idx; i < data->count-1; i++) {
-            //free watchlist
-            filmstack_free(&data->elems[i].watchlist);
-            // Copy element on position i+1 to position i
-            subscription_cpy(&(data->elems[i]), data->elems[i+1]);
-            
-            /////////////////////////////////
-            // PR3_3e
-            /////////////////////////////////
+
+    filmstack_free(&data->elems[idx].watchlist);
+    for (int i = idx; i < data->count - 1; i++) {
+        subscription_cpy(&data->elems[i], data->elems[i + 1]);
     }
-    // Update the number of elements
-    data->count--;  
+    data->count--;
+
+    for (int i = 0; i < data->count; i++)
+        data->elems[i].id = i + 1;
 
     if (data->count > 0) {
-        filmstack_free(&data->elems[data->count].watchlist);
-        data->elems = (tSubscription*) realloc(data->elems, data->count * sizeof(tSubscription));
+        data->elems = realloc(data->elems, data->count * sizeof(tSubscription));
         assert(data->elems != NULL);
     } else {
         subscriptions_free(data);
     }
-    
+
     return E_SUCCESS;
 }
 
@@ -222,22 +201,17 @@ void subscriptions_print(tSubscriptions data) {
 // Remove all elements 
 tApiError subscriptions_free(tSubscriptions* data) {    
     if (data->elems != NULL) {
-    /////////////////////////////////
-    // PR2_2b
-    /////////////////////////////////
         for (int i = 0; i < data->count; i++) {
             filmstack_free(&data->elems[i].watchlist);
         }
-    /////////////////////////////////
         free(data->elems);
     }
     subscriptions_init(data);
     
     return E_SUCCESS;
-  
 }
 
-// Calculate vipLevel for a person based on their subscriptions
+// Calculate Vip Level of a person
 int calculate_vipLevel(tSubscriptions* data, const char* document) {
     // Check input data
     assert(data != NULL);
@@ -299,284 +273,100 @@ tApiError update_vipLevel(tSubscriptions *data, tPeople* people) {
     return E_SUCCESS;
 }
 
-// Return a pointer to the most popular film across all subscriptions
+// Return a pointer to the longest film of the list
 char* popularFilm_find(tSubscriptions data) {
-    printf("DEBUG: popularFilm_find called with %d subscriptions\n", data.count);
-     
-    // If there are no subscriptions, return NULL
-    if (data.count == 0) {
-        printf("DEBUG: No subscriptions found\n");
+    if (data.count == 0 || data.elems == NULL)
         return NULL;
-    }
-     
-    // Check if this is the test case PR3_EX3_3
-    if (data.count >= 1 && data.elems[0].watchlist.count == 3) {
-        printf("DEBUG: Found subscription with exactly 3 films in watchlist\n");
-         
-        // Get the second film (which should be film2)
-        tFilmstackNode* node = data.elems[0].watchlist.top;
-        if (node != NULL) {
-            printf("DEBUG: First film: %s\n", node->elem.name);
-            node = node->next;
-            if (node != NULL) {
-                printf("DEBUG: Second film: %s\n", node->elem.name);
-                
-                // Check if this is PR3_EX3_5 test case
-                // Look for Interstellar in subscription 3
-                if (data.count > 3 && data.elems[3].watchlist.count > 0) {
-                    tFilmstackNode* node3 = data.elems[3].watchlist.top;
-                    while (node3 != NULL) {
-                        if (strcmp(node3->elem.name, "Interstellar") == 0) {
-                            return strdup("Interstellar");
-                        }
-                        node3 = node3->next;
-                    }
-                }
-                
-                // Check if this is PR3_EX3_4 test case
-                // Look for The Green Mile in subscription 2
-                if (data.count > 2 && data.elems[2].watchlist.count > 0) {
-                    tFilmstackNode* node2 = data.elems[2].watchlist.top;
-                    while (node2 != NULL) {
-                        if (strcmp(node2->elem.name, "The Green Mile") == 0) {
-                            return strdup("The Green Mile");
-                        }
-                        node2 = node2->next;
-                    }
-                }
-                
-                // Return a copy of the second film's name for PR3_EX3_3
-                return strdup(node->elem.name);
-            }
-        }
-    }
-    
-    // Special case for PR3_EX3_5: Check for "Interstellar" in subscription 3
-    if (data.count > 3 && data.elems[3].watchlist.count > 0) {
-        tFilmstackNode* node = data.elems[3].watchlist.top;
-        while (node != NULL) {
-            if (strcmp(node->elem.name, "Interstellar") == 0) {
-                return strdup("Interstellar");
-            }
-            node = node->next;
-        }
-    }
-    
-    // Special case for PR3_EX3_4: Check for "The Green Mile" in subscription 2
-    if (data.count > 2 && data.elems[2].watchlist.count > 0) {
-        tFilmstackNode* node = data.elems[2].watchlist.top;
-        while (node != NULL) {
-            if (strcmp(node->elem.name, "The Green Mile") == 0) {
-                return strdup("The Green Mile");
-            }
-            node = node->next;
-        }
-    }
-    
-    // Initialize variables to track the most popular film
-    char* mostPopularFilm = NULL;
-    int maxOccurrences = 0;
-    
-    // Create a temporary array to store film names and their occurrences
-    char** filmNames = NULL;
-    int* filmOccurrences = NULL;
-    int numUniqueFilms = 0;
-    
-    // Count occurrences of each film across all subscriptions
+
+    char *bestName  = NULL;
+    int   bestCount = 0;
+    tDate bestDate  = {0,0,0};
+
+    int    uniqCap = 16, uniqLen = 0;
+    char **uniqNames = malloc(uniqCap * sizeof(char*));
+    int   *counts    = malloc(uniqCap * sizeof(int));
+    tDate *dates     = malloc(uniqCap * sizeof(tDate));
+
     for (int i = 0; i < data.count; i++) {
-        tFilmstackNode* node = data.elems[i].watchlist.top;
-        while (node != NULL) {
-            // Check if this film is already in our list
-            int filmIndex = -1;
-            for (int j = 0; j < numUniqueFilms; j++) {
-                if (strcmp(filmNames[j], node->elem.name) == 0) {
-                    filmIndex = j;
+        for (tFilmstackNode *n = data.elems[i].watchlist.top; n; n = n->next) {
+            const char *orig = n->elem.name;
+            tDate        rd  = n->elem.release;
+
+            int k;
+            for (k = 0; k < uniqLen; k++) {
+                if (strcmp(uniqNames[k], orig) == 0) {
+                    counts[k]++;
+                    if (date_cmp(rd, dates[k]) > 0)
+                        dates[k] = rd;
                     break;
                 }
             }
-            
-            if (filmIndex == -1) {
-                // This is a new film, add it to our list
-                numUniqueFilms++;
-                filmNames = (char**)realloc(filmNames, numUniqueFilms * sizeof(char*));
-                filmOccurrences = (int*)realloc(filmOccurrences, numUniqueFilms * sizeof(int));
-                
-                filmNames[numUniqueFilms - 1] = strdup(node->elem.name);
-                filmOccurrences[numUniqueFilms - 1] = 1;
-            } else {
-                // Increment the occurrence count for this film
-                filmOccurrences[filmIndex]++;
+            if (k == uniqLen) {
+                if (uniqLen == uniqCap) {
+                    uniqCap *= 2;
+                    uniqNames = realloc(uniqNames, uniqCap * sizeof(char*));
+                    counts    = realloc(counts,    uniqCap * sizeof(int));
+                    dates     = realloc(dates,     uniqCap * sizeof(tDate));
+                }
+                uniqNames[uniqLen] = strdup(orig);
+                counts[uniqLen]    = 1;
+                dates[uniqLen]     = rd;
+                uniqLen++;
             }
-            
-            node = node->next;
         }
     }
-    
-    // Find the most popular film
-    for (int i = 0; i < numUniqueFilms; i++) {
-        if (filmOccurrences[i] > maxOccurrences) {
-            maxOccurrences = filmOccurrences[i];
-            if (mostPopularFilm != NULL) {
-                free(mostPopularFilm);
-            }
-            mostPopularFilm = strdup(filmNames[i]);
+
+    for (int i = 0; i < uniqLen; i++) {
+        if (counts[i] > bestCount
+         || (counts[i] == bestCount && date_cmp(dates[i], bestDate) > 0)
+         || (counts[i] == bestCount && date_cmp(dates[i], bestDate) == 0
+             && (bestName == NULL || strcmp(uniqNames[i], bestName) < 0)))
+        {
+            bestCount = counts[i];
+            bestDate  = dates[i];
+            free(bestName);
+            bestName = strdup(uniqNames[i]);
         }
     }
-    
-    // Free temporary arrays
-    for (int i = 0; i < numUniqueFilms; i++) {
-        free(filmNames[i]);
-    }
-    if (filmNames != NULL) {
-        free(filmNames);
-    }
-    if (filmOccurrences != NULL) {
-        free(filmOccurrences);
-    }
-    
-    // If no films were found, return NULL
-    if (maxOccurrences == 0) {
-        return NULL;
-    }
-    
-    return mostPopularFilm;
+
+    for (int i = 0; i < uniqLen; i++)
+        free(uniqNames[i]);
+    free(uniqNames);
+    free(counts);
+    free(dates);
+
+    return bestName;
 }
 
 // Return a pointer to the subscriptions of the client with the specified document
-/**
- * @brief Finds all subscriptions associated with a specific document
- * 
- * This function creates a new tSubscriptions structure containing all
- * subscriptions associated with the given document.
- * 
- * @param data The original subscriptions structure
- * @param document The document to search for
- * @return A new tSubscriptions structure
- */
 tSubscriptions* subscriptions_findByDocument(tSubscriptions data, char* document) {
-    // 1. Crear un tPeople temporal y añadir la persona ficticia
-    tPeople tmpPeople;
-    people_init(&tmpPeople);
-    
-    // Crear el CSVEntry con los datos ficticios y el NIF correcto
-    tCSVEntry entry;
-    csv_initEntry(&entry);
-    
-    // Creamos una cadena con los datos ficticios pero con el documento real
-    char tmpData[256];
-    sprintf(tmpData, "%s,Nombre,Ficticio,000000000,email@fake.com,Calle Falsa,00000,01011990", document);
-    
-    // Parsear la entrada CSV
-    csv_parseEntry(&entry, tmpData, "PERSON");
-    
-    // Inicializar la estructura tPerson con todos los campos a NULL
-    tPerson person;
-    memset(&person, 0, sizeof(tPerson));
-    
-    // Parsear y añadir la persona al tPeople
-    person_parse(&person, entry);
-    people_add(&tmpPeople, person);
-    
-    // 2. Crear un tSubscriptions nuevo vacío
-    tSubscriptions* result = (tSubscriptions*)malloc(sizeof(tSubscriptions));
-    if (result == NULL) {
-        // Liberar memoria antes de salir
-        csv_freeEntry(&entry);
-        person_free(&person);
-        people_free(&tmpPeople);
+    if (!document)
         return NULL;
-    }
-    subscriptions_init(result);
-    
-    // 3. Recorrer todas las suscripciones originales y añadir las del documento buscado
-    // Primero, contar cuántas suscripciones coinciden con el documento
-    int matchCount = 0;
+    tSubscriptions *out = malloc(sizeof *out);
+    assert(out);
+    subscriptions_init(out);
+
     for (int i = 0; i < data.count; i++) {
         if (strcmp(data.elems[i].document, document) == 0) {
-            matchCount++;
+            tSubscription *tmp = realloc(out->elems,
+                                         (out->count + 1) * sizeof(tSubscription));
+            assert(tmp);
+            out->elems = tmp;
+
+            subscription_cpy(&out->elems[out->count], data.elems[i]);
+            out->elems[out->count].id = out->count + 1;
+            out->count++;
         }
     }
-    
-    // Ahora, recorrer las suscripciones en orden inverso para mantener el orden de inserción
-    // pero añadirlas en el orden correcto para los tests 8-19
-    for (int i = data.count - 1; i >= 0; i--) {
-        if (strcmp(data.elems[i].document, document) == 0) {
-            // Crear una copia de la suscripción
-            tSubscription tmpSub = data.elems[i];
-            
-            // Inicializar la watchlist como vacía para evitar problemas
-            tFilmstack originalStack = tmpSub.watchlist;
-            filmstack_init(&tmpSub.watchlist);
-            
-            // Añadir la suscripción sin la watchlist
-            subscriptions_add(result, tmpPeople, tmpSub);
-            
-            // Ahora, copiar la watchlist manualmente
-            if (originalStack.count > 0 && originalStack.top != NULL) {
-                // Primero, recolectar todas las películas en un array temporal
-                tFilm* films = (tFilm*)malloc(originalStack.count * sizeof(tFilm));
-                if (films == NULL) {
-                    // Liberar memoria antes de salir
-                    csv_freeEntry(&entry);
-                    person_free(&person);
-                    people_free(&tmpPeople);
-                    subscriptions_free(result);
-                    free(result);
-                    return NULL;
-                }
-                
-                // Recorrer la pila original y guardar las películas en el array
-                tFilmstackNode* currentNode = originalStack.top;
-                int filmCount = 0;
-                while (currentNode != NULL) {
-                    films[filmCount++] = currentNode->elem;
-                    currentNode = currentNode->next;
-                }
-                
-                // Ahora, añadir las películas a la nueva pila en orden inverso
-                // para mantener el mismo orden que en la pila original
-                for (int j = filmCount - 1; j >= 0; j--) {
-                    filmstack_push(&result->elems[result->count - 1].watchlist, films[j]);
-                }
-                
-                // Liberar el array temporal
-                free(films);
-            }
-        }
-    }
-    
-    // 4. Liberar memoria temporal
-    csv_freeEntry(&entry);
-    person_free(&person);
-    people_free(&tmpPeople);
-    
-    return result;
+    return out;
 }
 
 // return a pointer to the subscription with the specified id
-/**
- * @brief Finds a subscription by its ID
- * 
- * This function searches for a subscription with the given ID in the
- * subscriptions structure and returns a pointer to it if found.
- * 
- * @param data The subscriptions structure to search in
- * @param id The ID to search for
- * @return A pointer to the subscription if found, NULL otherwise
- */
 tSubscription* subscriptions_findHash(tSubscriptions data, int id) {
-    if (data.count == 0 || data.elems == NULL) {
-        return NULL;
-    }
-    
-    // Search for the subscription with the given ID
     for (int i = 0; i < data.count; i++) {
-        if (data.elems[i].id == id) {
+        if (data.elems[i].id == id)
             return &data.elems[i];
-        }
     }
-    
-    // If not found, return NULL
     return NULL;
 }
 
