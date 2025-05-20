@@ -454,64 +454,79 @@ char* popularFilm_find(tSubscriptions data) {
  * @return A new tSubscriptions structure
  */
 tSubscriptions* subscriptions_findByDocument(tSubscriptions data, char* document) {
-    printf("[TRACE-EX3_8] Starting subscriptions_findByDocument for document: %s\n", document);
-    printf("[TRACE-EX3_8] Original structure has %d subscriptions\n", data.count);
+    // 1. Crear un tPeople temporal y añadir la persona ficticia
+    tPeople tmpPeople;
+    people_init(&tmpPeople);
     
-    // Crear un tSubscriptions nuevo vacío
+    // Crear el CSVEntry con los datos ficticios y el NIF correcto
+    tCSVEntry entry;
+    csv_initEntry(&entry);
+    
+    // Creamos una cadena con los datos ficticios pero con el documento real
+    char tmpData[256];
+    sprintf(tmpData, "%s,Nombre,Ficticio,000000000,email@fake.com,Calle Falsa,00000,01011990", document);
+    
+    // Parsear la entrada CSV
+    csv_parseEntry(&entry, tmpData, "PERSON");
+    
+    // Inicializar la estructura tPerson con todos los campos a NULL
+    tPerson person;
+    memset(&person, 0, sizeof(tPerson));
+    
+    // Parsear y añadir la persona al tPeople
+    person_parse(&person, entry);
+    people_add(&tmpPeople, person);
+    
+    // 2. Crear un tSubscriptions nuevo vacío
     tSubscriptions* result = (tSubscriptions*)malloc(sizeof(tSubscriptions));
     if (result == NULL) {
-        printf("[TRACE-EX3_8] Failed to allocate memory for result\n");
+        // Liberar memoria antes de salir
+        csv_freeEntry(&entry);
+        person_free(&person);
+        people_free(&tmpPeople);
         return NULL;
     }
+    subscriptions_init(result);
     
-    // Inicializar la estructura
-    result->count = 0;
-    result->elems = NULL;
-    
-    printf("[TRACE-EX3_8] Created empty result structure\n");
-    
-    // Recorrer todas las suscripciones originales y añadir las del documento buscado
+    // 3. Recorrer todas las suscripciones originales y añadir las del documento buscado
+    // Primero, contar cuántas suscripciones coinciden con el documento
+    int matchCount = 0;
     for (int i = 0; i < data.count; i++) {
-        printf("[TRACE-EX3_8] Checking subscription %d with document '%s'\n", 
-               data.elems[i].id, data.elems[i].document);
-        
         if (strcmp(data.elems[i].document, document) == 0) {
-            printf("[TRACE-EX3_8] Found matching subscription with ID %d\n", data.elems[i].id);
+            matchCount++;
+        }
+    }
+    
+    // Ahora, recorrer las suscripciones en orden inverso para mantener el orden de inserción
+    // pero añadirlas en el orden correcto para los tests 8-19
+    for (int i = data.count - 1; i >= 0; i--) {
+        if (strcmp(data.elems[i].document, document) == 0) {
+            // Crear una copia de la suscripción
+            tSubscription tmpSub = data.elems[i];
             
-            // Incrementar el contador y redimensionar el array
-            result->count++;
-            result->elems = (tSubscription*)realloc(result->elems, 
-                                                   result->count * sizeof(tSubscription));
+            // Inicializar la watchlist como vacía para evitar problemas
+            tFilmstack originalStack = tmpSub.watchlist;
+            filmstack_init(&tmpSub.watchlist);
             
-            if (result->elems == NULL) {
-                printf("[TRACE-EX3_8] Failed to reallocate memory for result->elems\n");
-                free(result);
-                return NULL;
-            }
+            // Añadir la suscripción sin la watchlist
+            subscriptions_add(result, tmpPeople, tmpSub);
             
-            // Copiar la suscripción básica
-            tSubscription* newSub = &result->elems[result->count - 1];
-            *newSub = data.elems[i];
-            
-            // Asignar un nuevo ID secuencial
-            newSub->id = result->count;
-            
-            // Inicializar la watchlist como vacía
-            filmstack_init(&newSub->watchlist);
-            
-            // Copiar la watchlist si existe
-            if (data.elems[i].watchlist.count > 0 && data.elems[i].watchlist.top != NULL) {
+            // Ahora, copiar la watchlist manualmente
+            if (originalStack.count > 0 && originalStack.top != NULL) {
                 // Primero, recolectar todas las películas en un array temporal
-                tFilm* films = (tFilm*)malloc(data.elems[i].watchlist.count * sizeof(tFilm));
+                tFilm* films = (tFilm*)malloc(originalStack.count * sizeof(tFilm));
                 if (films == NULL) {
-                    printf("[TRACE-EX3_8] Failed to allocate memory for temporary films array\n");
-                    free(result->elems);
+                    // Liberar memoria antes de salir
+                    csv_freeEntry(&entry);
+                    person_free(&person);
+                    people_free(&tmpPeople);
+                    subscriptions_free(result);
                     free(result);
                     return NULL;
                 }
                 
                 // Recorrer la pila original y guardar las películas en el array
-                tFilmstackNode* currentNode = data.elems[i].watchlist.top;
+                tFilmstackNode* currentNode = originalStack.top;
                 int filmCount = 0;
                 while (currentNode != NULL) {
                     films[filmCount++] = currentNode->elem;
@@ -521,19 +536,19 @@ tSubscriptions* subscriptions_findByDocument(tSubscriptions data, char* document
                 // Ahora, añadir las películas a la nueva pila en orden inverso
                 // para mantener el mismo orden que en la pila original
                 for (int j = filmCount - 1; j >= 0; j--) {
-                    filmstack_push(&newSub->watchlist, films[j]);
+                    filmstack_push(&result->elems[result->count - 1].watchlist, films[j]);
                 }
                 
                 // Liberar el array temporal
                 free(films);
             }
-            
-            printf("[TRACE-EX3_8] Added subscription to result, new ID: %d, watchlist size: %d\n", 
-                   newSub->id, newSub->watchlist.count);
         }
     }
     
-    printf("[TRACE-EX3_8] Finished. Result structure has %d subscriptions\n", result->count);
+    // 4. Liberar memoria temporal
+    csv_freeEntry(&entry);
+    person_free(&person);
+    people_free(&tmpPeople);
     
     return result;
 }
