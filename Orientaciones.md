@@ -1,4 +1,9 @@
-<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
+// 1. Crear un tPeople temporal y añadir la persona ficticia
+// 		Crear el CSVEntry con los datos ficticios y el NIF correcto
+// 		Parsear y añadir la persona al tPeople
+// 2. Crear un tSubscriptions nuevo vacío
+// 3. Recorrer todas las suscripciones originales y añadir las del documento buscado
+// 4. Liberar memoria temporal
 
 # Documento Maestro: Soluciones para Ejercicio 3 de PR3 - UOCPlay
 
